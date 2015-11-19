@@ -1,4 +1,5 @@
 ﻿##  Wzorowane na przykładzie Rona Zacharskiego
+import numpy
 
 class Classifier:
 
@@ -30,30 +31,31 @@ class Classifier:
         for i in range(self.vlen):
             self.normalizeColumn(i)
         
-
-        
-
     def getMedian(self, alist):
         """TODO: zwraca medianę listy"""
-
-        return 0
-        
-
-    def getAbsoluteStandardDeviation(self, alist, median):
+        return numpy.median(alist)
+    
+    def getAbsoluteStandardDeviation(self, alist, mediana):
         """TODO: zwraca absolutne odchylenie standardowe listy od mediany"""
-        return 0
-
+        absolutnaSuma = sum([abs(i - mediana)for i in alist])
+        return absolutnaSuma/len(alist)
+    
     def normalizeColumn(self, columnNumber):
-        """TODO: 
+        """TODO:
         1. mając dany nr kolumny w self.data, dokonuje normalizacji wg Modified Standard Score
         2. zapisz medianę i odchylenie standardowe dla kolumny w self.medianAndDeviation"""
+        nr_kolumny = [i[1][columnNumber] for i in self.data]
+        mediana = self.getMedian(nr_kolumny)
+        absolutneOdchylenieStandardowe = self.getAbsoluteStandardDeviation(nr_kolumny, mediana)
+        self.medianAndDeviation.append((mediana, absolutneOdchylenieStandardowe))
+        Normalizacja = ([(i[1][columnNumber] - mediana) for i in self.data])/absolutneOdchylenieStandardowe
+        return Normalizacja
 
-        pass
-        
     def normalizeVector(self, v):
         """Znormalizuj podany wektor mając daną medianę i odchylenie standardowe dla każdej kolumny"""
         vector = list(v)
-        # TODO: wpisz kod
+        for i in len(vector):
+            vector[i] = (vector[i] - self.medianAndDeviation[i][0])/self.medianAndDeviation[i][1]
         return vector
 
     def manhattan(self, vector1, vector2):
